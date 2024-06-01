@@ -1,0 +1,7 @@
+{
+    "name": "Bulk Add DALLE AI Images",
+    "package": "dalleforanki",
+    "description": "An Anki add-on that generates images using DALL-E.",
+    "version": "1.0.0",
+    "author": "ccos"
+}
