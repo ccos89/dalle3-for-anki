@@ -26,6 +26,11 @@ def log_error(error_message):
     with open('error_log.txt', 'a') as log_file:
         log_file.write(f"{timestamp} - {error_message}\n")
 
+def debug_log(log_data):
+    timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    with open('debug_log.txt', 'a') as log_file:
+        log_file.write(f"{timestamp} - {log_data}\n")
+
 def extract_numeric_value(text):
     return int(sub(r'\D', '', text))  # Remove non-digit characters
 
@@ -51,9 +56,14 @@ class GenerateImagesThread(QThread):
             note = self.app.browser.mw.col.getNote(nid)
             term_text = note[self.app.current_settings["Term Field"]]
             sentence_text = note[self.app.current_settings["Sentence Field"]]
+            if sentence_text:
+                prompt_sentence = sentence_text
+            else:
+                prompt_sentence = term_text
+                
 
             # Create the prompt for the OpenAI API
-            prompt = self.app.current_settings["Current Prompt"].format(term=term_text, sentence=sentence_text)
+            prompt = self.app.current_settings["Current Prompt"].format(term=term_text, sentence=prompt_sentence)
 
             # Call the OpenAI API
             try:
@@ -197,6 +207,7 @@ class AIApp(QDialog):
         self.prompt_field.setFixedHeight(100)  # Adjusted height
         prompt = self.set_display_prompt()
         self.prompt_field.setText(prompt)
+        self.prompt_field.textChanged.connect(self.update_current_prompt)
         self.prompt_field_key = QLabel('Note: longer prompts will consume more tokens and may increase cost of API request. DALL-E-3 automatically rewrites user prompts to improve results and so very verbose prompts/excessive prompt engineering is usually not necessary.')
         self.prompt_field_key.setWordWrap(True)
 
@@ -340,6 +351,9 @@ class AIApp(QDialog):
             self.term_dropdown.setCurrentText(AIApp.current_settings["Term Field"])
         if isinstance(AIApp.current_settings["Image Field"], str) and AIApp.current_settings["Image Field"] in AIApp.current_settings["Note Fields"]:
             self.write_image_field.setCurrentText(AIApp.current_settings["Image Field"])
+
+    def update_current_prompt(self):
+        AIApp.current_settings["Current Prompt"] = self.prompt_field.toPlainText()
 
     def process_notes(self):
         # Fetch current settings from the dialog
