@@ -15,9 +15,9 @@
 
 ## &#9881; Installation
 
-You can download the latest version of the addon from the Releases tab.  You can double-click the .ankiaddon file to initiate the install dialog, or you can open Anki->Tools->Add-ons->Install from File.
+You can download the latest version of the addon from the [Releases](https://github.com/ccos89/dalle3-for-anki/releases/) tab.  You can double-click the .ankiaddon file to initiate the install dialog, or you can open Anki->Tools->Add-ons->Install from File.
 
-This addon is also available for download on Ankiweb.
+This addon is also available for download on [Ankiweb](https://ankiweb.net/shared/info/1651931833).
 
 You can also package your own version of the addon by cloning/downloading this repository and compressing the contents of the \src folder into a .zip folder.  The contents of the \src folder must be the top level of the .zip folder (no intermediary folder).  You can then just rename the .zip extension to .ankiaddon and you will have an Anki addon.  This is useful if you want to edit the underlying code (see [Advanced Usage](#advanced-usage)).
 
