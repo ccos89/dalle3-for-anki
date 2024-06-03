@@ -21,6 +21,8 @@ This addon is also available for download on Ankiweb.
 
 You can also package your own version of the addon by cloning/downloading this repository and compressing the contents of the \src folder into a .zip folder.  The contents of the \src folder must be the top level of the .zip folder (no intermediary folder).  You can then just rename the .zip extension to .ankiaddon and you will have an Anki addon.  This is useful if you want to edit the underlying code (see [Advanced Usage](#advanced-usage)).
 
+*I have tested this addon with Windows 10 and 11 in both Qt6 and Qt5 versions of Anki 24.04.1 without issues.  I do not have access to MacOS and do not have a Linux box set up properly to test support there, so Windows is the only official OS I can support, but I don't see any reason why it wouldn't work elsewhere. I am open to accept PRs to fix any issues that arise.*
+
 
 ### 	&#127758; OpenAI API Access
 
@@ -118,7 +120,7 @@ Your error log will also include the nid, which is the note ID of the specific c
 
 ***
 
-Please try to reference the error log and remediate the problem - if you aren't able to solve the problem, you are welcome to open an Issue here on Github and I will do my best to help you.
+Please try to reference the error log and remediate the problem - if you aren't able to solve the problem, you are welcome to open an Issue here on Github and I will do my best to help you.  If you do open an issue please include your error log text file, your OS, what version of Anki you are running (including which Qt version), and if possible details about the card causing the issue.
 
 I have tested the addon across multiple Windows machines without issue - it should work across any standard OS, but I don't have access to a MacOS device to test it.
 
