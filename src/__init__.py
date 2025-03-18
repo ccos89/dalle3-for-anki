@@ -53,7 +53,7 @@ class GenerateImagesThread(QThread):
             if not self._is_running:
                 break
 
-            note = self.app.browser.mw.col.getNote(nid)
+            note = self.app.browser.mw.col.get_note(nid) # Replace getNote with get_note
             term_text = note[self.app.current_settings["Term Field"]]
             sentence_text = note[self.app.current_settings["Sentence Field"]]
             if sentence_text:
@@ -139,7 +139,8 @@ class AIApp(QDialog):
         "Conflict Action": "",
         "API Key": "",
         "Default Prompt": "",
-        "Current Prompt": ""
+        "Current Prompt": "",
+        "Base URL": "" # Add Base URL to current settings
     }
 
     def __init__(self, browser):
@@ -202,6 +203,13 @@ class AIApp(QDialog):
         api_key = self.fetch_api_key()
         self.api_key_field.setText(api_key)
 
+        # Add Base URL UI element
+        self.base_url_label = QLabel('Base URL (Optional)')
+        self.base_url_field = QLineEdit()
+        self.base_url_field.setPlaceholderText('Enter custom Base URL (optional)')
+        base_url = self.fetch_base_url()
+        self.base_url_field.setText(base_url)
+
         self.prompt_label = QLabel('DALL-E Prompt')
         self.prompt_field = QTextEdit()
         self.prompt_field.setFixedHeight(100)  # Adjusted height
@@ -213,6 +221,9 @@ class AIApp(QDialog):
 
         self.line_edit_layout.addWidget(self.api_key_label)
         self.line_edit_layout.addWidget(self.api_key_field)
+        # Add Base URL to layout
+        self.line_edit_layout.addWidget(self.base_url_label)
+        self.line_edit_layout.addWidget(self.base_url_field)
         self.line_edit_layout.addWidget(self.prompt_label)
         self.line_edit_layout.addWidget(self.prompt_field)
         self.line_edit_layout.addWidget(self.prompt_field_key)
@@ -268,6 +279,10 @@ class AIApp(QDialog):
             return AIApp.current_settings["API Key"]
         else:
             return ""
+    
+    # Fetch Base URL from config
+    def fetch_base_url(self):
+        return AIApp.current_settings.get("Base URL", "")
 
     def fetch_conflict_index(self):
         if AIApp.current_settings["Conflict Action"] != "":
@@ -289,6 +304,8 @@ class AIApp(QDialog):
         AIApp.current_settings["Image Field"] = self.write_image_field.currentText()
         AIApp.current_settings["Conflict Action"] = self.conflict_action_combo.currentIndex()
         AIApp.current_settings["Resize Height"] = self.resize_image_combo.currentIndex()
+        # Save Base URL
+        AIApp.current_settings["Base URL"] = self.base_url_field.text()
 
         with open('config.json', 'w') as config:
             json.dump(AIApp.current_settings, config, indent=4)
@@ -307,8 +324,12 @@ class AIApp(QDialog):
             return []
         sample_nid = nids[0]
         mw = self.browser.mw
-        model = mw.col.getNote(sample_nid).model()
-        fields = mw.col.models.fieldNames(model)
+        # Replace getNote with get_note
+        note = mw.col.get_note(sample_nid)
+        # Replace model with note_type
+        model = note.note_type()
+        # Replace fieldNames with field_names
+        fields = mw.col.models.field_names(model)
         return fields
 
     def populate_dropdowns(self):
@@ -363,13 +384,17 @@ class AIApp(QDialog):
         self.current_settings["Image Field"] = self.write_image_field.currentText()
         self.current_settings["Conflict Action"] = self.conflict_action_combo.currentIndex()
         self.current_settings["Resize Height"] = self.resize_image_combo.currentIndex()
+        # Fetch Base URL
+        self.current_settings["Base URL"] = self.base_url_field.text()
 
         nids = self.get_selected_note_ids()
         if not nids:
             return
         
+        # Initialize OpenAI client with Base URL if provided
         api_key = self.current_settings["API Key"]
-        self.client = OpenAI(api_key=api_key)
+        base_url = self.current_settings["Base URL"]
+        self.client = OpenAI(api_key=api_key, base_url=base_url if base_url else None)
 
         self.progress_dialog = ProgressBarDialog(self)
         self.thread = GenerateImagesThread(self, nids)
@@ -443,8 +468,8 @@ class AIApp(QDialog):
                 if current_image_field.strip() == "":
                     note[self.current_settings["Image Field"]] = f"<img src='{image_filename}' />"
 
-            note.addTag('ai-img')
-            note.flush()
+            note.add_tag('ai-img') # Replace addTag with add_tag
+            self.browser.mw.col.update_note(note)  # Replace flush with update_note
         except Exception as e:
             error_message = f"Error updating note {note.id}: {e}"
             print(error_message)

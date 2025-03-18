@@ -6,6 +6,7 @@
     "Resize Height": 1,
     "Conflict Action": 0,
     "API Key": "",
-    "Default Prompt": "A masterwork, captivating and gorgeous work of art in any medium or style of the following: {sentence}.  The work completely captures the essence of {term}. The work focuses purely on the visual representation of the theme and has no text.",
-    "Current Prompt": "A masterwork, captivating and gorgeous work of art in any medium or style of the following: {sentence}.  The work completely captures the essence of {term}. The work focuses purely on the visual representation of the theme and has no text."
+    "Default Prompt": "A masterwork, captivating and gorgeous work of art in any medium or style of the following: {sentence}. The work completely captures the essence of {term}. The work focuses purely on the visual representation of the theme and has no text.",
+    "Current Prompt": "A masterwork, captivating and gorgeous work of art in any medium or style of the following: {sentence}. The work completely captures the essence of {term}. The work focuses purely on the visual representation of the theme and has no text.",
+    "Base URL": ""
 }
